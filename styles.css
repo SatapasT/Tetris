@@ -33,3 +33,13 @@ h1 {
     font-size: 32px;
     font-weight: bold;
 }
+
+.current-block {
+    background-color: #00ff00;
+    box-shadow: 0 0 5px #00ff00;
+}
+
+.lockin-block {
+    background-color: #ff0080;
+     box-shadow: 0 0 5px #ff0080;
+}
