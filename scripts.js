@@ -5,8 +5,21 @@ let gameInterval;
 const EMPTY = 0;
 const CURRENT_BLOCK = 1;
 const LOCKIN_BLOCK = 2;
+const BOARD_CENTER = 4;
 
-let currentBlock = null;
+let currentBlock;
+
+const BLOCK_TEMPLATE = [
+    {
+        name: "T",
+        shape: [
+            [1, 1, 1],
+            [0, 1, 0],
+        ],
+        currentLocation: [],
+    },
+    // Add more block templates here if needed
+];
 
 function initBoard() {
     board = [];
@@ -20,76 +33,83 @@ function initBoard() {
 }
 
 function renderboard() {
-    const boardElement = document.getElementById('board');
-    boardElement.innerHTML = '';
+    const boardElement = document.getElementById("board");
+    boardElement.innerHTML = "";
     for (let row = 0; row < 20; row++) {
         for (let col = 0; col < 10; col++) {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
+            const cell = document.createElement("div");
+            cell.className = "cell";
             if (board[row][col] === CURRENT_BLOCK) {
-                cell.className += ' current-block';
+                cell.className += " current-block";
             } else if (board[row][col] === LOCKIN_BLOCK) {
-                cell.className += ' lockin-block';
+                cell.className += " lockin-block";
             }
             boardElement.appendChild(cell);
         }
     }
 }
 
-function createBlock() {
-    currentBlock = {
-        shape: [
-            [1, 1, 1],
-            [0, 1, 0]
-        ],
-        blockRow: 0,
-        blockCol: 3 
+function spawnBlock() {
+    currentBlock.shape.map((blockRow, rowIndex) => {
+        blockRow.map((blockCell, colIndex) => {
+            if (blockCell === 0) {
+                return;
+            }
+            const row = rowIndex;
+            const col = BOARD_CENTER + colIndex;
+
+            board[row][col] = CURRENT_BLOCK;
+            currentBlock.currentLocation.push([row, col]);
+        });
+    });
+}
+
+function moveBlock() {
+    if (currentBlock == null) {
+        const blocks = Object.values(BLOCK_TEMPLATE);
+        const randomBlockNumber = Math.floor(Math.random() * blocks.length);
+        currentBlock = createBlock(randomBlockNumber);
+        spawnBlock();
+        return;
+    }
+
+    if (
+        currentBlock.currentLocation.some(
+            ([row, col]) => row === 19 || board[row + 1][col] === LOCKIN_BLOCK
+        )
+    ) {
+        currentBlock.currentLocation.map(([lockRow, lockCol]) => {
+            board[lockRow][lockCol] = LOCKIN_BLOCK;
+        });
+        currentBlock = null;
+        return;
+    }
+
+    const newLocation = currentBlock.currentLocation.map(([row, col]) => {
+        board[row][col] = EMPTY;
+        return [row + 1, col];
+    });
+
+    newLocation.map(([row, col]) => {
+        board[row][col] = CURRENT_BLOCK;
+    });
+
+    currentBlock.currentLocation = newLocation;
+}
+
+function createBlock(BlockNumber) {
+    const blocks = BLOCK_TEMPLATE;
+    const newBlock = {
+        name: blocks[BlockNumber].name,
+        shape: blocks[BlockNumber].shape,
+        currentLocation: [],
     };
-}
-
-function placeBlockOnBoard() {
-    // Clear previous block
-    for (let boardRow = 0; boardRow < 20; boardRow++) {
-        for (let boardCol = 0; boardCol < 10; boardCol++) {
-            if (board[boardRow][boardCol] === CURRENT_BLOCK) {
-                board[boardRow][boardCol] = EMPTY;
-            }
-        }
-    }
-    // Place current block
-    if (currentBlock) {
-        for (let shapeRow = 0; shapeRow < currentBlock.shape.length; shapeRow++) {
-            for (let shapeCol = 0; shapeCol < currentBlock.shape[shapeRow].length; shapeCol++) {
-                if (currentBlock.shape[shapeRow][shapeCol]) {
-                    let boardRow = currentBlock.blockRow + shapeRow;
-                    let boardCol = currentBlock.blockCol + shapeCol;
-                    if (boardRow >= 0 && boardRow < 20 && boardCol >= 0 && boardCol < 10) {
-                        board[boardRow][boardCol] = CURRENT_BLOCK;
-                    }
-                }
-            }
-        }
-    }
-}
-
-function renderGame() {
-    if (!currentBlock) {
-        createBlock();
-    } else {
-        // Move block down
-        currentBlock.blockRow++;
-        // If block reaches bottom, stop moving
-        if (currentBlock.blockRow + currentBlock.shape.length > 20) {
-            currentBlock.blockRow--;
-        }
-    }
-    placeBlockOnBoard();
-    renderboard();
+    return newBlock;
 }
 
 initBoard();
-createBlock();
 gameActive = true;
 gameInterval = setInterval(() => {
-    renderGame();
+    moveBlock();
+    renderboard();
 }, GAME_SPEED);
