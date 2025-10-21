@@ -97,11 +97,11 @@ function moveBlock() {
     currentBlock.currentLocation = newLocation;
 }
 
-function createBlock(BlockNumber) {
+function createBlock(blockNumber) {
     const blocks = BLOCK_TEMPLATE;
     const newBlock = {
-        name: blocks[BlockNumber].name,
-        shape: blocks[BlockNumber].shape,
+        name: blocks[blockNumber].name,
+        shape: blocks[blockNumber].shape,
         currentLocation: [],
     };
     return newBlock;
