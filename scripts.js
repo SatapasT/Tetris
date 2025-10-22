@@ -1,6 +1,7 @@
 let board = [];
 let gameActive = true;
-const GAME_SPEED = 500;
+const GAME_SPEED = 100;
+const NATURAL_FALL_SPEED = 1000;
 let gameInterval;
 const EMPTY = 0;
 const CURRENT_BLOCK = 1;
@@ -8,6 +9,7 @@ const LOCKIN_BLOCK = 2;
 const BOARD_CENTER = 4;
 
 let currentBlock;
+let currentBlockClock = NATURAL_FALL_SPEED;
 
 const BLOCK_TEMPLATE = [
     {
@@ -18,7 +20,6 @@ const BLOCK_TEMPLATE = [
         ],
         currentLocation: [],
     },
-    // Add more block templates here if needed
 ];
 
 function initBoard() {
@@ -65,6 +66,14 @@ function spawnBlock() {
 }
 
 function moveBlock() {
+    console.log(currentBlockClock);
+    currentBlockClock += GAME_SPEED;
+    if (currentBlockClock % NATURAL_FALL_SPEED !== 0) {
+        
+        return;
+    }
+    currentBlockClock %= NATURAL_FALL_SPEED;
+
     if (currentBlock == null) {
         const blocks = Object.values(BLOCK_TEMPLATE);
         const randomBlockNumber = Math.floor(Math.random() * blocks.length);
@@ -96,6 +105,8 @@ function moveBlock() {
 
     currentBlock.currentLocation = newLocation;
 }
+
+
 
 function createBlock(blockNumber) {
     const blocks = BLOCK_TEMPLATE;
