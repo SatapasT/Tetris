@@ -8,8 +8,8 @@ const CURRENT_BLOCK = 1;
 const LOCKIN_BLOCK = 2;
 const BOARD_CENTER = 4;
 
-let currentBlock;
-let currentBlockClock = NATURAL_FALL_SPEED;
+let currentBlock = null;
+let currentBlockClock = NATURAL_FALL_SPEED - GAME_SPEED;
 
 const BLOCK_TEMPLATE = [
     {
@@ -20,6 +20,59 @@ const BLOCK_TEMPLATE = [
         ],
         currentLocation: [],
     },
+    {
+        name: "I",
+        shape: [
+            [1],
+            [1],
+            [1],
+            [1],
+        ],
+        currentLocation: [],
+    },
+    {
+        name: "L",
+        shape: [
+            [1,0],
+            [1,0],
+            [1,1],
+        ],
+        currentLocation: [],
+    },
+    {
+        name: "J",
+        shape: [
+            [0,1],
+            [0,1],
+            [1,1],
+        ],
+        currentLocation: [],
+    },
+    {
+        name: "J",
+        shape: [
+            [1,1],
+            [1,1],
+        ],
+        currentLocation: [],
+    },
+    {
+        name: "S",
+        shape: [
+            [0,1,1],
+            [1,1,0],
+        ],
+        currentLocation: [],
+    },
+    {
+        name: "Z",
+        shape: [
+            [1,1,0],
+            [0,1,1],
+        ],
+        currentLocation: [],
+    }
+    
 ];
 
 function initBoard() {
@@ -69,9 +122,9 @@ function moveBlock() {
     console.log(currentBlockClock);
     currentBlockClock += GAME_SPEED;
     if (currentBlockClock % NATURAL_FALL_SPEED !== 0) {
-        
         return;
     }
+
     currentBlockClock %= NATURAL_FALL_SPEED;
 
     if (currentBlock == null) {
