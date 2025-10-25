@@ -9,6 +9,8 @@ let alreadySwapped = false;
 const EMPTY = 0;
 const CURRENT_BLOCK = 1;
 const LOCKIN_BLOCK = 2;
+const PREVIEW_DROP = 3;
+
 const BOARD_CENTER = 4;
 
 let currentBlock = null;
@@ -181,6 +183,8 @@ function renderMainBoard() {
                 cell.className += " current-block";
             } else if (board[row][col] === LOCKIN_BLOCK) {
                 cell.className += " lockin-block";
+            } else if (board[row][col] === PREVIEW_DROP) {
+                cell.className += " preview-drop";
             }
             boardElement.appendChild(cell);
         }
@@ -358,7 +362,7 @@ function checkPlayerValidMove(newLocation) {
         return (
             row >= 0 && row < 20 &&
             col >= 0 && col < 10 &&
-            (board[row][col] === EMPTY || board[row][col] === CURRENT_BLOCK)
+            (board[row][col] === EMPTY || board[row][col] === CURRENT_BLOCK || board[row][col] === PREVIEW_DROP)
         );
     });
 }
@@ -454,6 +458,53 @@ function clearFullRows() {
     score += Math.floor(1000 * (1.1 ** fullRows));
 }
 
+const resetButton = document.getElementById("reset-button");
+if (resetButton) {
+    resetButton.addEventListener("click", resetGame);
+}
+
+function previewDropPosition() {
+    if (currentBlock == null) {
+        return;
+    }
+    
+    board = board.map(row => row.map(cell => (cell === PREVIEW_DROP ? EMPTY : cell)));
+    previewBlockLocation = currentBlock.currentLocation
+    let canMoveDown = true;
+
+    while (canMoveDown) {
+        const newLocation = previewBlockLocation.map(([row, col]) => [row + 1, col]);
+        if (newLocation.some(([row, col]) => row >= 20 || board[row][col] === LOCKIN_BLOCK)) {
+            canMoveDown = false;
+        } else {
+            previewBlockLocation = newLocation;
+        }
+    }
+
+    previewBlockLocation.map(([row, col]) => {
+        if (board[row][col] === EMPTY) {
+            board[row][col] = PREVIEW_DROP;
+        }
+    });
+}
+
+function applyGameOverStyles() {
+    const boardElement = document.getElementById("board");
+    boardElement.innerHTML = "";
+    for (let row = 0; row < 20; row++) {
+        for (let col = 0; col < 10; col++) {
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            if (board[row][col] === LOCKIN_BLOCK) {
+                cell.className += " game-over-lockin";
+            } else {
+                cell.className += " game-over-empty";
+            }
+            boardElement.appendChild(cell);
+        }
+    }
+}
+
 function resetGame() {
     clearInterval(gameInterval);
     score = 0;
@@ -481,33 +532,11 @@ function resetGame() {
                 return;
             }
         }
+        previewDropPosition();
         clearFullRows();
         renderboard();
     }, GAME_SPEED);
 }
-
-const resetButton = document.getElementById("reset-button");
-if (resetButton) {
-    resetButton.addEventListener("click", resetGame);
-}
-
-function applyGameOverStyles() {
-    const boardElement = document.getElementById("board");
-    boardElement.innerHTML = "";
-    for (let row = 0; row < 20; row++) {
-        for (let col = 0; col < 10; col++) {
-            const cell = document.createElement("div");
-            cell.className = "cell";
-            if (board[row][col] === LOCKIN_BLOCK) {
-                cell.className += " game-over-lockin";
-            } else {
-                cell.className += " game-over-empty";
-            }
-            boardElement.appendChild(cell);
-        }
-    }
-}
-
 
 resetGame();
 

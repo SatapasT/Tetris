@@ -45,6 +45,13 @@ h1 {
     font-weight: bold;
 }
 
+.cell.preview-drop {
+    background-color: #170e3f; /* Same as empty cell */
+    outline: 2px solid yellow; /* Yellow outline going inward */
+    outline-offset: -2px; /* Ensure the outline goes inward */
+    border-radius: 3px; /* Match the cell border radius */
+}
+
 .current-block {
     background-color: #00ff00;
     box-shadow: 0 0 5px #00ff00;
