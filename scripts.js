@@ -268,7 +268,6 @@ function playerMoveBlock() {
                 col -= 1;
                 return [row, col];
             });
-            moveCurrentBlock(currentBlock, newLocation);
             break;
         case RIGHT:
             newLocation = currentBlock.currentLocation.map(([row, col]) => {
