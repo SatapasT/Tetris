@@ -10,6 +10,11 @@ const BOARD_CENTER = 4;
 
 let currentBlock = null;
 let currentBlockClock = NATURAL_FALL_SPEED - GAME_SPEED;
+let currentPlayerMove = null;
+
+LEFT = 0;
+RIGHT = 1;
+DOWN = 2;
 
 const BLOCK_TEMPLATE = [
     {
@@ -119,7 +124,6 @@ function spawnBlock() {
 }
 
 function moveBlock() {
-    console.log(currentBlockClock);
     currentBlockClock += GAME_SPEED;
     if (currentBlockClock % NATURAL_FALL_SPEED !== 0) {
         return;
@@ -159,7 +163,67 @@ function moveBlock() {
     currentBlock.currentLocation = newLocation;
 }
 
+function playerMoveBlock() {
+    if (currentBlock == null || currentPlayerMove == null) {
+        return;
+    }
+    switch (currentPlayerMove) {
+        case LEFT:
+            newLocation = currentBlock.currentLocation.map(([row, col]) => {
+                col -= 1;
+                return [row, col];
+            });
+            if (checkPlayerValidMove(newLocation) === false) {
+                return;
+            }
+            moveCurrentBlock(currentBlock, newLocation);
+            break;
+        case RIGHT:
+            // Move block right logic
+            break;
+        case DOWN:
+            // Move block down logic
+            break;
+    }
+    currentPlayerMove = null;
+}
 
+function moveCurrentBlock(currentBlock, newLocation) {
+    currentBlock.currentLocation.map(([row, col]) => {
+                board[row][col] = EMPTY;
+            });
+            
+            
+            newLocation.map(([row, col]) => {
+                board[row][col] = CURRENT_BLOCK;
+            });
+            currentBlock.currentLocation = newLocation;
+}
+
+function checkPlayerValidMove(newLocation) {
+    return newLocation.every(([row, col]) => {
+        return (
+            row >= 0 && row < 20 &&
+            col >= 0 && col < 10 &&
+            (board[row][col] === EMPTY || board[row][col] === CURRENT_BLOCK)
+        );
+    });
+}
+
+
+document.addEventListener('keydown', (event) => {
+    switch(event.key) {
+        case 'a':
+            currentPlayerMove = LEFT;
+            break;
+        case 'd':
+            currentPlayerMove = RIGHT;
+            break;
+        case 's':
+            currentPlayerMove = DOWN;
+            break;
+    }
+});
 
 function createBlock(blockNumber) {
     const blocks = BLOCK_TEMPLATE;
@@ -174,6 +238,7 @@ function createBlock(blockNumber) {
 initBoard();
 gameActive = true;
 gameInterval = setInterval(() => {
+    playerMoveBlock();
     moveBlock();
     renderboard();
 }, GAME_SPEED);
