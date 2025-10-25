@@ -209,7 +209,7 @@ function playerRotateBlock() {
     }
     switch (currentPlayerRotate) {
         case 90:
-            const newShape = reverseRows(transpose(currentBlock.shape));
+            newShape = reverseRows(transpose(currentBlock.shape));
             newLocation = getLocationAfterRotation(newShape);
             if (checkPlayerValidMove(newLocation) === false) {
                 return;
@@ -218,7 +218,13 @@ function playerRotateBlock() {
             currentBlock.shape = newShape;
             break;
         case -90:
-            // Rotate right logic
+            newShape = transpose(reverseRows(currentBlock.shape));
+            newLocation = getLocationAfterRotation(newShape);
+            if (checkPlayerValidMove(newLocation) === false) {
+                return;
+            }
+            moveCurrentBlock(currentBlock, newLocation);
+            currentBlock.shape = newShape;
             break;
     }
     currentPlayerRotate = null;
