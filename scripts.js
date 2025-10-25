@@ -11,6 +11,7 @@ const BOARD_CENTER = 4;
 let currentBlock = null;
 let currentBlockClock = NATURAL_FALL_SPEED - GAME_SPEED;
 let currentPlayerMove = null;
+let currentPlayerRotate = null;
 
 LEFT = 0;
 RIGHT = 1;
@@ -38,46 +39,46 @@ const BLOCK_TEMPLATE = [
     {
         name: "L",
         shape: [
-            [1,0],
-            [1,0],
-            [1,1],
+            [1, 0],
+            [1, 0],
+            [1, 1],
         ],
         currentLocation: [],
     },
     {
         name: "J",
         shape: [
-            [0,1],
-            [0,1],
-            [1,1],
+            [0, 1],
+            [0, 1],
+            [1, 1],
         ],
         currentLocation: [],
     },
     {
         name: "J",
         shape: [
-            [1,1],
-            [1,1],
+            [1, 1],
+            [1, 1],
         ],
         currentLocation: [],
     },
     {
         name: "S",
         shape: [
-            [0,1,1],
-            [1,1,0],
+            [0, 1, 1],
+            [1, 1, 0],
         ],
         currentLocation: [],
     },
     {
         name: "Z",
         shape: [
-            [1,1,0],
-            [0,1,1],
+            [1, 1, 0],
+            [0, 1, 1],
         ],
         currentLocation: [],
     }
-    
+
 ];
 
 function initBoard() {
@@ -130,14 +131,6 @@ function moveBlock() {
     }
 
     currentBlockClock %= NATURAL_FALL_SPEED;
-
-    if (currentBlock == null) {
-        const blocks = Object.values(BLOCK_TEMPLATE);
-        const randomBlockNumber = Math.floor(Math.random() * blocks.length);
-        currentBlock = createBlock(randomBlockNumber);
-        spawnBlock();
-        return;
-    }
 
     if (
         currentBlock.currentLocation.some(
@@ -202,16 +195,58 @@ function playerMoveBlock() {
     currentPlayerMove = null;
 }
 
+function transpose(matrix) {
+    return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
+}
+
+function reverseRows(matrix) {
+    return matrix.map(row => row.reverse());
+}
+
+function playerRotateBlock() {
+    if (currentBlock == null || currentPlayerRotate == null) {
+        return;
+    }
+    switch (currentPlayerRotate) {
+        case 90:
+            const newShape = reverseRows(transpose(currentBlock.shape));
+            newLocation = getLocationAfterRotation(newShape);
+            if (checkPlayerValidMove(newLocation) === false) {
+                return;
+            }
+            moveCurrentBlock(currentBlock, newLocation);
+            currentBlock.shape = newShape;
+            break;
+        case -90:
+            // Rotate right logic
+            break;
+    }
+    currentPlayerRotate = null;
+}
+
+function getLocationAfterRotation(newShape) {
+    const [baseRow, baseCol] = currentBlock.currentLocation[0];
+    return newShape.flatMap((row, rowIndex) => {
+        return row.map((cell, colIndex) => {
+            if (cell === 0) {
+                return null;
+            }
+            return [baseRow + rowIndex, baseCol + colIndex];
+        }).filter(Boolean);
+    });
+}
+
+
 function moveCurrentBlock(currentBlock, newLocation) {
     currentBlock.currentLocation.map(([row, col]) => {
-                board[row][col] = EMPTY;
-            });
-            
-            
-            newLocation.map(([row, col]) => {
-                board[row][col] = CURRENT_BLOCK;
-            });
-            currentBlock.currentLocation = newLocation;
+        board[row][col] = EMPTY;
+    });
+
+
+    newLocation.map(([row, col]) => {
+        board[row][col] = CURRENT_BLOCK;
+    });
+    currentBlock.currentLocation = newLocation;
 }
 
 function checkPlayerValidMove(newLocation) {
@@ -226,7 +261,7 @@ function checkPlayerValidMove(newLocation) {
 
 
 document.addEventListener('keydown', (event) => {
-    switch(event.key) {
+    switch (event.key) {
         case 'a':
             currentPlayerMove = LEFT;
             break;
@@ -235,6 +270,12 @@ document.addEventListener('keydown', (event) => {
             break;
         case 's':
             currentPlayerMove = DOWN;
+            break;
+        case 'ArrowLeft':
+            currentPlayerRotate = -90;
+            break;
+        case 'ArrowRight':
+            currentPlayerRotate = 90;
             break;
     }
 });
@@ -252,7 +293,15 @@ function createBlock(blockNumber) {
 initBoard();
 gameActive = true;
 gameInterval = setInterval(() => {
+    if (currentBlock == null) {
+        const blocks = Object.values(BLOCK_TEMPLATE);
+        const randomBlockNumber = Math.floor(Math.random() * blocks.length);
+        currentBlock = createBlock(randomBlockNumber);
+        spawnBlock();
+        return;
+    }
     playerMoveBlock();
+    playerRotateBlock();
     moveBlock();
     renderboard();
 }, GAME_SPEED);
