@@ -179,10 +179,24 @@ function playerMoveBlock() {
             moveCurrentBlock(currentBlock, newLocation);
             break;
         case RIGHT:
-            // Move block right logic
+            newLocation = currentBlock.currentLocation.map(([row, col]) => {
+                col += 1;
+                return [row, col];
+            });
+            if (checkPlayerValidMove(newLocation) === false) {
+                return;
+            }
+            moveCurrentBlock(currentBlock, newLocation);
             break;
         case DOWN:
-            // Move block down logic
+            newLocation = currentBlock.currentLocation.map(([row, col]) => {
+                row += 1;
+                return [row, col];
+            });
+            if (checkPlayerValidMove(newLocation) === false) {
+                return;
+            }
+            moveCurrentBlock(currentBlock, newLocation);
             break;
     }
     currentPlayerMove = null;
