@@ -438,6 +438,41 @@ function clearFullRows() {
     score += Math.floor(1000 * (1.1 ** fullRows));
 }
 
+function resetGame() {
+    clearInterval(gameInterval);
+    score = 0;
+    alreadySwapped = false;
+    currentBlock = null;
+    nextBlock = null;
+    storedBlock = null;
+    currentBlockClock = NATURAL_FALL_SPEED - GAME_SPEED;
+    currentPlayerMove = null;
+    currentPlayerRotate = null;
+    initBoard();
+    gameActive = true;
+    gameInterval = setInterval(() => {
+        playerMoveBlock();
+        playerRotateBlock();
+        moveBlock();
+        if (currentBlock == null) {
+            currentBlock = nextBlock;
+            const blocks = Object.values(BLOCK_TEMPLATE);
+            const randomBlockNumber = Math.floor(Math.random() * blocks.length);
+            nextBlock = null;
+            nextBlock = createBlock(randomBlockNumber);
+            spawnBlock();
+        }
+        clearFullRows();
+        renderboard();
+    }, GAME_SPEED);
+}
+
+// Add event listener for reset button
+const resetButton = document.getElementById("reset-button");
+if (resetButton) {
+    resetButton.addEventListener("click", resetGame);
+}
+
 initBoard();
 gameActive = true;
 gameInterval = setInterval(() => {
