@@ -4,6 +4,7 @@ const GAME_SPEED = 100;
 const NATURAL_FALL_SPEED = 1000;
 let gameInterval;
 let score = 0;
+let alreadySwapped = false;
 
 const EMPTY = 0;
 const CURRENT_BLOCK = 1;
@@ -12,6 +13,7 @@ const BOARD_CENTER = 4;
 
 let currentBlock = null;
 let nextBlock = null;
+let storedBlock = null;
 let currentBlockClock = NATURAL_FALL_SPEED - GAME_SPEED;
 let currentPlayerMove = null;
 let currentPlayerRotate = null;
@@ -95,7 +97,80 @@ function initBoard() {
     renderboard();
 }
 
+function renderNextBlock() {
+    const nextBlockBoard = document.getElementById("next-block-board");
+    nextBlockBoard.innerHTML = "";
+    const previewGrid = Array(5).fill(null).map(() => Array(5).fill(EMPTY));
+
+    if (nextBlock) {
+        const shape = nextBlock.shape;
+        const offsetRow = Math.floor((5 - shape.length) / 2);
+        const offsetCol = Math.floor((5 - shape[0].length) / 2);
+
+        shape.map((row, rowIndex) => {
+            row.map((cell, colIndex) => {
+                if (cell !== EMPTY) {
+                    previewGrid[offsetRow + rowIndex][offsetCol + colIndex] = CURRENT_BLOCK;
+                }
+            });
+        });
+    }
+
+    previewGrid.map(row => {
+        row.map(cell => {
+            const cellElement = document.createElement("div");
+            cellElement.className = "cell";
+            if (cell === CURRENT_BLOCK) {
+                cellElement.className += " current-block";
+            } else {
+                cellElement.className += " preview-empty";
+            }
+            nextBlockBoard.appendChild(cellElement);
+        });
+    });
+}
+
+function renderStoredBlock() {
+    const storeBlockBoard = document.getElementById("store-block-board");
+    storeBlockBoard.innerHTML = "";
+    const previewGrid = Array(5).fill(null).map(() => Array(5).fill(EMPTY));
+
+    if (storedBlock) {
+        const shape = storedBlock.shape;
+        const offsetRow = Math.floor((5 - shape.length) / 2);
+        const offsetCol = Math.floor((5 - shape[0].length) / 2);
+
+        shape.map((row, rowIndex) => {
+            row.map((cell, colIndex) => {
+                if (cell !== EMPTY) {
+                    previewGrid[offsetRow + rowIndex][offsetCol + colIndex] = CURRENT_BLOCK;
+                }
+            });
+        });
+    }
+
+    previewGrid.map(row => {
+        row.map(cell => {
+            const cellElement = document.createElement("div");
+            cellElement.className = "cell";
+            if (cell === CURRENT_BLOCK) {
+                cellElement.className += " current-block";
+            } else {
+                cellElement.className += " preview-empty";
+            }
+            storeBlockBoard.appendChild(cellElement);
+        });
+    });
+}
+
 function renderboard() {
+    renderMainBoard();
+    document.getElementById("score").textContent = score;
+    renderNextBlock();
+    renderStoredBlock();
+}
+
+function renderMainBoard() {
     const boardElement = document.getElementById("board");
     boardElement.innerHTML = "";
     for (let row = 0; row < 20; row++) {
@@ -110,8 +185,6 @@ function renderboard() {
             boardElement.appendChild(cell);
         }
     }
-
-    document.getElementById("score").textContent = score;
 }
 
 function spawnBlock() {
@@ -149,6 +222,7 @@ function moveBlock() {
             board[lockRow][lockCol] = LOCKIN_BLOCK;
         });
         currentBlock = null;
+        alreadySwapped = false;
         return;
     }
 
@@ -291,6 +365,9 @@ document.addEventListener('keydown', (event) => {
         case 'ArrowRight':
             currentPlayerRotate = 90;
             break;
+        case ' ':
+            swapStoredBlock();
+            break;
     }
 });
 
@@ -304,9 +381,49 @@ function createBlock(blockNumber) {
     return newBlock;
 }
 
+function resetBlockLocation(block) {
+    block.currentLocation = [];
+    block.shape.map((blockRow, rowIndex) => {
+        blockRow.map((blockCell, colIndex) => {
+            if (blockCell === 0) {
+                return;
+            }
+            const row = rowIndex;
+            const col = BOARD_CENTER + colIndex;
+            block.currentLocation.push([row, col]);
+        });
+    });
+    block.currentLocation.map(([row, col]) => {
+        board[row][col] = CURRENT_BLOCK;
+    });
+}
+
+function swapStoredBlock() {
+    if (alreadySwapped == true) {
+        return; 
+    }
+    alreadySwapped = true;
+
+    currentBlock.currentLocation.map(([row, col]) => {
+        board[row][col] = EMPTY;
+    });
+    currentBlock.currentLocation = [];
+    if (storedBlock == null) {
+        storedBlock = currentBlock;
+        currentBlock = null;
+    } else {
+        const temp = currentBlock;
+        currentBlock = storedBlock;
+        storedBlock = temp;
+    }
+    if (currentBlock != null) {
+        resetBlockLocation(currentBlock);
+    }
+}
+
 function clearFullRows() {
     let fullRows = 0;
-    board.forEach((row, rowIndex) => {
+    board.map((row, rowIndex) => {
         if (row.every(cell => cell === LOCKIN_BLOCK)) {
             board.splice(rowIndex, 1);
             board.unshift(new Array(10).fill(EMPTY));
