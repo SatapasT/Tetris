@@ -1,6 +1,6 @@
 let board = [];
 let gameActive = true;
-const GAME_SPEED = 100;
+const GAME_SPEED = 10;
 const NATURAL_FALL_SPEED = 1000;
 let gameInterval;
 let score = 0;
