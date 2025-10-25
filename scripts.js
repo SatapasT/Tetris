@@ -229,7 +229,7 @@ function moveBlock() {
     }
     currentBlockClock %= NATURAL_FALL_SPEED;
 
-     if (currentBlock == null) {
+    if (currentBlock == null) {
         return;
     }
 
@@ -268,9 +268,6 @@ function playerMoveBlock() {
                 col -= 1;
                 return [row, col];
             });
-            if (checkPlayerValidMove(newLocation) === false) {
-                return;
-            }
             moveCurrentBlock(currentBlock, newLocation);
             break;
         case RIGHT:
@@ -278,22 +275,21 @@ function playerMoveBlock() {
                 col += 1;
                 return [row, col];
             });
-            if (checkPlayerValidMove(newLocation) === false) {
-                return;
-            }
-            moveCurrentBlock(currentBlock, newLocation);
             break;
         case DOWN:
             newLocation = currentBlock.currentLocation.map(([row, col]) => {
                 row += 1;
                 return [row, col];
             });
-            if (checkPlayerValidMove(newLocation) === false) {
-                return;
-            }
-            moveCurrentBlock(currentBlock, newLocation);
+            break;
+        case "Hard Drop":
+            newLocation = getDropPosition();
             break;
     }
+    if (checkPlayerValidMove(newLocation) === false) {
+        return;
+    }
+    moveCurrentBlock(currentBlock, newLocation);
     currentPlayerMove = null;
 }
 
@@ -379,13 +375,16 @@ document.addEventListener('keydown', (event) => {
         case 's':
             currentPlayerMove = DOWN;
             break;
+        case 'ArrowDown':
+            currentPlayerMove = "Hard Drop";
+            break;
         case 'ArrowLeft':
             currentPlayerRotate = -90;
             break;
         case 'ArrowRight':
             currentPlayerRotate = 90;
             break;
-        case ' ':
+        case 'q':
             swapStoredBlock();
             break;
     }
@@ -420,7 +419,7 @@ function resetBlockLocation(block) {
 
 function swapStoredBlock() {
     if (alreadySwapped == true) {
-        return; 
+        return;
     }
     alreadySwapped = true;
 
@@ -463,29 +462,40 @@ if (resetButton) {
     resetButton.addEventListener("click", resetGame);
 }
 
+
+
 function previewDropPosition() {
     if (currentBlock == null) {
         return;
     }
-    
+
     board = board.map(row => row.map(cell => (cell === PREVIEW_DROP ? EMPTY : cell)));
-    previewBlockLocation = currentBlock.currentLocation
-    let canMoveDown = true;
+    const dropPosition = getDropPosition();
 
-    while (canMoveDown) {
-        const newLocation = previewBlockLocation.map(([row, col]) => [row + 1, col]);
-        if (newLocation.some(([row, col]) => row >= 20 || board[row][col] === LOCKIN_BLOCK)) {
-            canMoveDown = false;
-        } else {
-            previewBlockLocation = newLocation;
-        }
-    }
-
-    previewBlockLocation.map(([row, col]) => {
+    dropPosition.map(([row, col]) => {
         if (board[row][col] === EMPTY) {
             board[row][col] = PREVIEW_DROP;
         }
     });
+}
+
+function getDropPosition() {
+    if (currentBlock == null) {
+        return [];
+    }
+
+    let dropLocation = currentBlock.currentLocation;
+    let canMoveDown = true;
+
+    while (canMoveDown) {
+        const newLocation = dropLocation.map(([row, col]) => [row + 1, col]);
+        if (newLocation.some(([row, col]) => row >= 20 || board[row][col] === LOCKIN_BLOCK)) {
+            canMoveDown = false;
+        } else {
+            dropLocation = newLocation;
+        }
+    }
+    return dropLocation;
 }
 
 function applyGameOverStyles() {
