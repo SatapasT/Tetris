@@ -5,28 +5,34 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <h1>Tetris</h1>
-    <div class="status-container" id="status"></div>
-    <div class="controls">A To Move Left, D to Move Right, S to Move Down</div>
-        <div class="controls">Arrow Keys Right and Left to Rotate, Space to Store, Arrow Key Down to Hard Drop</div>
-
-    <div class="game-container">
-        <div class="store-block-container">
-            <h2>Stored Block</h2>
-            <div class="store-block-board" id="store-block-board"></div>
+    <h1 class="game-title">Tetris</h1>
+    <div class="game-layout">
+        <div class="game-container">
+            <div class="store-block-container">
+                <h2>Stored Block</h2>
+                <div class="store-block-board" id="store-block-board"></div>
+            </div>
+            <div class="game-board" id="board"></div>
+            <div class="right-container">
+                <div class="score-container">
+                    <h2>Score</h2>
+                    <div id="score" class="score">0</div>
+                </div>
+                <div class="next-block-container">
+                    <h2>Next Block</h2>
+                    <div class="next-block-board" id="next-block-board"></div>
+                </div>
+            </div>
         </div>
-        <div class="game-board" id="board"></div>
-        <div class="score-next-container">
-            <div class="score-container">
-                <h2>Score</h2>
-                <div id="score" class="score">0</div>
-            </div>
-            <div class="next-block-container">
-                <h2>Next Block</h2>
-                <div class="next-block-board" id="next-block-board"></div>
-            </div>
+        <div class="instructions">
+            <h2>How to Play</h2>
+            <p>Use <strong>A</strong> to move left, <strong>D</strong> to move right, and <strong>S</strong> to move down.</p>
+            <p>Use <strong>Arrow Keys</strong> to rotate blocks and <strong>Space</strong> to store a block.</p>
+            <p>Complete a full row to earn points!</p>
+            <p>Try to keep the board clear and aim for a high score!</p>
         </div>
     </div>
+    <div class="status-container" id="status"></div>
     <br>
     <script src="scripts.js"></script>
 </body>

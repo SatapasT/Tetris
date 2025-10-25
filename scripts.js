@@ -100,12 +100,12 @@ function initBoard() {
 function renderNextBlock() {
     const nextBlockBoard = document.getElementById("next-block-board");
     nextBlockBoard.innerHTML = "";
-    const previewGrid = Array(5).fill(null).map(() => Array(5).fill(EMPTY));
+    const previewGrid = Array(4).fill(null).map(() => Array(4).fill(EMPTY));
 
     if (nextBlock) {
         const shape = nextBlock.shape;
-        const offsetRow = Math.floor((5 - shape.length) / 2);
-        const offsetCol = Math.floor((5 - shape[0].length) / 2);
+        const offsetRow = Math.floor((4 - shape.length) / 2);
+        const offsetCol = Math.floor((4 - shape[0].length) / 2);
 
         shape.map((row, rowIndex) => {
             row.map((cell, colIndex) => {
@@ -133,12 +133,12 @@ function renderNextBlock() {
 function renderStoredBlock() {
     const storeBlockBoard = document.getElementById("store-block-board");
     storeBlockBoard.innerHTML = "";
-    const previewGrid = Array(5).fill(null).map(() => Array(5).fill(EMPTY));
+    const previewGrid = Array(4).fill(null).map(() => Array(4).fill(EMPTY));
 
     if (storedBlock) {
         const shape = storedBlock.shape;
-        const offsetRow = Math.floor((5 - shape.length) / 2);
-        const offsetCol = Math.floor((5 - shape[0].length) / 2);
+        const offsetRow = Math.floor((4 - shape.length) / 2);
+        const offsetCol = Math.floor((4 - shape[0].length) / 2);
 
         shape.map((row, rowIndex) => {
             row.map((cell, colIndex) => {

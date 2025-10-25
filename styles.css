@@ -16,7 +16,7 @@ h1 {
 .game-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Center vertically */
     gap: 40px;
 }
 
@@ -29,6 +29,8 @@ h1 {
     padding: 5px;
     border-radius: 10px;
     border: 3px solid #0400ff;
+    box-shadow: 0 0 10px #0400ff, 0 0 20px #0400ff;
+    margin: 0 auto; /* Center align the board */
 }
 
 .cell {
@@ -67,11 +69,12 @@ h1 {
     box-shadow: 0 0 10px #FFD700;
 }
 
+/* Updated font styling for the score number */
 .score {
-    font-size: 36px;
-    font-weight: bold;
-    color: #00FF00;
-    text-shadow: 0 0 5px #00FF00;
+    font-family: 'Press Start 2P', cursive; /* Retro game font */
+    font-size: 2rem;
+    color: #FFD700;
+    text-align: center;
 }
 
 .score-next-container {
@@ -95,8 +98,8 @@ h1 {
 
 .next-block-board {
     display: grid;
-    grid-template-columns: repeat(5, 38px);
-    grid-template-rows: repeat(5, 38px);
+    grid-template-columns: repeat(4, 38px);
+    grid-template-rows: repeat(4, 38px);
     gap: 1px;
     justify-content: center;
     align-items: center;
@@ -112,7 +115,10 @@ h1 {
 }
 
 .store-block-container {
-    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
     margin-right: 40px;
     color: #FFD700;
     font-size: 24px;
@@ -127,8 +133,8 @@ h1 {
 
 .store-block-board {
     display: grid;
-    grid-template-columns: repeat(5, 38px);
-    grid-template-rows: repeat(5, 38px);
+    grid-template-columns: repeat(4, 38px);
+    grid-template-rows: repeat(4, 38px);
     gap: 1px;
     justify-content: center;
     align-items: center;
@@ -141,4 +147,69 @@ h1 {
 .store-block-board .cell.preview-empty {
     background-color: #170e3f;
     box-shadow: none;
+}
+
+/* Updated Tetris title styling */
+.game-title {
+    font-family: 'Impact', sans-serif;
+    font-size: 5rem; /* Increased font size */
+    color: #FFD700;
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 10px;
+    align-self: center; /* Centered relative to the board */
+}
+
+/* Styling for the instructions box */
+.instructions {
+    margin-top: 40px; /* Increased gap between the main board and How to Play section */
+    width: calc(100% - 40px);
+    background-color: #1e1e1e;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #FFD700;
+    text-align: center;
+}
+
+.instructions h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.instructions p {
+    font-size: 1rem;
+    margin: 5px 0;
+}
+
+/* Updated font styling for Stored Block, Score, and Next Block */
+.store-block-container h2,
+.score-container h2,
+.next-block-container h2 {
+    font-family: 'Press Start 2P', cursive; /* Retro game font */
+    font-size: 1.5rem;
+    color: #FFD700;
+    text-align: center;
+}
+
+/* Styling for the updated layout */
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center vertically */
+}
+
+.right-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+}
+
+.store-block-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
 }
