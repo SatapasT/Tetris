@@ -16,7 +16,7 @@ h1 {
 .game-container {
     display: flex;
     justify-content: center;
-    align-items: center; /* Center vertically */
+    align-items: center; 
     gap: 40px;
 }
 
@@ -69,10 +69,8 @@ h1 {
     box-shadow: 0 0 10px #FFD700;
 }
 
-/* Updated font styling for the score number */
 .score {
-    font-family: 'Press Start 2P', cursive; /* Retro game font */
-    font-size: 2rem;
+    font-family: 'Press Start 2P', cursive;
     color: #FFD700;
     text-align: center;
 }
@@ -118,7 +116,7 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center vertically */
+    justify-content: center;
     margin-right: 40px;
     color: #FFD700;
     font-size: 24px;
@@ -149,20 +147,18 @@ h1 {
     box-shadow: none;
 }
 
-/* Updated Tetris title styling */
 .game-title {
     font-family: 'Impact', sans-serif;
-    font-size: 5rem; /* Increased font size */
+    font-size: 5rem; 
     color: #FFD700;
     text-align: center;
     margin-bottom: 20px;
     letter-spacing: 10px;
-    align-self: center; /* Centered relative to the board */
+    align-self: center; 
 }
 
-/* Styling for the instructions box */
 .instructions {
-    margin-top: 40px; /* Increased gap between the main board and How to Play section */
+    margin-top: 40px; 
     width: calc(100% - 40px);
     background-color: #1e1e1e;
     color: #ffffff;
@@ -182,21 +178,19 @@ h1 {
     margin: 5px 0;
 }
 
-/* Updated font styling for Stored Block, Score, and Next Block */
 .store-block-container h2,
 .score-container h2,
 .next-block-container h2 {
-    font-family: 'Press Start 2P', cursive; /* Retro game font */
+    font-family: 'Press Start 2P', cursive;
     font-size: 1.5rem;
     color: #FFD700;
     text-align: center;
 }
 
-/* Styling for the updated layout */
 .game-container {
     display: flex;
     justify-content: center;
-    align-items: center; /* Center vertically */
+    align-items: center; 
 }
 
 .right-container {
@@ -204,10 +198,9 @@ h1 {
     flex-direction: column;
     gap: 20px;
     align-items: center;
-    justify-content: center; /* Center vertically */
+    justify-content: center;
 }
 
-/* Enhanced styling for the reset button */
 .reset-button {
     font-family: 'Press Start 2P', cursive;
     font-size: 1.2rem;
@@ -228,4 +221,13 @@ h1 {
 .reset-button:hover {
     background-color: #FFD700;
     color: #1e1e1e;
+}
+
+/* Game over styles */
+.game-over-lockin {
+    background-color: #808080;
+}
+
+.game-over-empty {
+    background-color: #303030;
 }

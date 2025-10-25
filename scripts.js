@@ -188,9 +188,25 @@ function renderMainBoard() {
 }
 
 function spawnBlock() {
+    if (currentBlock.shape.some((blockRow, rowIndex) => {
+        return blockRow.some((blockCell, colIndex) => {
+            if (blockCell === EMPTY) {
+                return false;
+            }
+            const row = rowIndex;
+            const col = BOARD_CENTER + colIndex;
+            return board[row][col] === LOCKIN_BLOCK;
+        });
+    })) {
+        gameActive = false;
+        clearInterval(gameInterval);
+        applyGameOverStyles();
+        return;
+    }
+
     currentBlock.shape.map((blockRow, rowIndex) => {
         blockRow.map((blockCell, colIndex) => {
-            if (blockCell === 0) {
+            if (blockCell === EMPTY) {
                 return;
             }
             const row = rowIndex;
@@ -461,32 +477,38 @@ function resetGame() {
             nextBlock = null;
             nextBlock = createBlock(randomBlockNumber);
             spawnBlock();
+            if (gameActive === false) {
+                return;
+            }
         }
         clearFullRows();
         renderboard();
     }, GAME_SPEED);
 }
 
-// Add event listener for reset button
 const resetButton = document.getElementById("reset-button");
 if (resetButton) {
     resetButton.addEventListener("click", resetGame);
 }
 
-initBoard();
-gameActive = true;
-gameInterval = setInterval(() => {
-    playerMoveBlock();
-    playerRotateBlock();
-    moveBlock();
-    if (currentBlock == null) {
-        currentBlock = nextBlock
-        const blocks = Object.values(BLOCK_TEMPLATE);
-        const randomBlockNumber = Math.floor(Math.random() * blocks.length);
-        nextBlock = null;
-        nextBlock = createBlock(randomBlockNumber);
-        spawnBlock();
+function applyGameOverStyles() {
+    const boardElement = document.getElementById("board");
+    boardElement.innerHTML = "";
+    for (let row = 0; row < 20; row++) {
+        for (let col = 0; col < 10; col++) {
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            if (board[row][col] === LOCKIN_BLOCK) {
+                cell.className += " game-over-lockin";
+            } else {
+                cell.className += " game-over-empty";
+            }
+            boardElement.appendChild(cell);
+        }
     }
-    clearFullRows();
-    renderboard();
-}, GAME_SPEED);
+}
+
+
+resetGame();
+
+
