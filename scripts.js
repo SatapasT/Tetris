@@ -3,12 +3,15 @@ let gameActive = true;
 const GAME_SPEED = 100;
 const NATURAL_FALL_SPEED = 1000;
 let gameInterval;
+let score = 0;
+
 const EMPTY = 0;
 const CURRENT_BLOCK = 1;
 const LOCKIN_BLOCK = 2;
 const BOARD_CENTER = 4;
 
 let currentBlock = null;
+let nextBlock = null;
 let currentBlockClock = NATURAL_FALL_SPEED - GAME_SPEED;
 let currentPlayerMove = null;
 let currentPlayerRotate = null;
@@ -107,6 +110,8 @@ function renderboard() {
             boardElement.appendChild(cell);
         }
     }
+
+    document.getElementById("score").textContent = score;
 }
 
 function spawnBlock() {
@@ -129,8 +134,11 @@ function moveBlock() {
     if (currentBlockClock % NATURAL_FALL_SPEED !== 0) {
         return;
     }
-
     currentBlockClock %= NATURAL_FALL_SPEED;
+
+     if (currentBlock == null) {
+        return;
+    }
 
     if (
         currentBlock.currentLocation.some(
@@ -296,18 +304,37 @@ function createBlock(blockNumber) {
     return newBlock;
 }
 
+function clearFullRows() {
+    let fullRows = 0;
+    board.forEach((row, rowIndex) => {
+        if (row.every(cell => cell === LOCKIN_BLOCK)) {
+            board.splice(rowIndex, 1);
+            board.unshift(new Array(10).fill(EMPTY));
+            fullRows += 1;
+        }
+    });
+
+    if (fullRows === 0) {
+        return;
+    }
+
+    score += Math.floor(1000 * (1.1 ** fullRows));
+}
+
 initBoard();
 gameActive = true;
 gameInterval = setInterval(() => {
-    if (currentBlock == null) {
-        const blocks = Object.values(BLOCK_TEMPLATE);
-        const randomBlockNumber = Math.floor(Math.random() * blocks.length);
-        currentBlock = createBlock(randomBlockNumber);
-        spawnBlock();
-        return;
-    }
     playerMoveBlock();
     playerRotateBlock();
     moveBlock();
+    if (currentBlock == null) {
+        currentBlock = nextBlock
+        const blocks = Object.values(BLOCK_TEMPLATE);
+        const randomBlockNumber = Math.floor(Math.random() * blocks.length);
+        nextBlock = null;
+        nextBlock = createBlock(randomBlockNumber);
+        spawnBlock();
+    }
+    clearFullRows();
     renderboard();
 }, GAME_SPEED);

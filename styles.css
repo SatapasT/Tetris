@@ -13,6 +13,13 @@ h1 {
     margin-bottom: 20px;
 }
 
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+}
+
 .game-board {
     display: grid;
     grid-template-columns: repeat(10, 38px);
@@ -42,4 +49,25 @@ h1 {
 .lockin-block {
     background-color: #ff0080;
      box-shadow: 0 0 5px #ff0080;
+}
+
+.score-container {
+    margin-left: 20px;
+    color: #FFD700;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #1a1a1a;
+    padding: 10px;
+    border-radius: 10px;
+    border: 3px solid #FFD700;
+    box-shadow: 0 0 10px #FFD700;
+    align-self: flex-start;
+}
+
+.score {
+    font-size: 36px;
+    font-weight: bold;
+    color: #00FF00;
+    text-shadow: 0 0 5px #00FF00;
 }
