@@ -259,6 +259,7 @@ function moveBlock() {
 }
 
 function playerMoveBlock() {
+    console.log(currentBlockClock)
     if (currentBlock == null || currentPlayerMove == null) {
         return;
     }
@@ -283,6 +284,7 @@ function playerMoveBlock() {
             break;
         case "Hard Drop":
             newLocation = getDropPosition();
+            currentBlockClock = NATURAL_FALL_SPEED - GAME_SPEED;
             break;
     }
     if (checkPlayerValidMove(newLocation) === false) {
